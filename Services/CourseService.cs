@@ -237,7 +237,7 @@ namespace Xmu.Crms.Services.ViceVersa.Services
                    classInfo.FivePointPercentage < 0 || classInfo.FivePointPercentage > 10 ||
                    classInfo.FourPointPercentage < 0 || classInfo.FourPointPercentage > 10 ||
                    classInfo.ThreePointPercentage < 0 || classInfo.ThreePointPercentage > 10 ||
-                   classInfo.FivePointPercentage + classInfo.FourPointPercentage + classInfo.ThreePointPercentage != 10||
+                   classInfo.FivePointPercentage + classInfo.FourPointPercentage + classInfo.ThreePointPercentage != 100||
                    classInfo.PresentationPercentage+classInfo.ReportPercentage!=100)
                     throw new InvalidOperationException();
                 classInfo.Course = course;
