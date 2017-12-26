@@ -119,24 +119,24 @@ namespace Xmu.Crms.Services.ViceVersa.Services
             }
         }
 
-        //移到classService
-        public IList<ClassInfo> ListClassByUserId(long userId)
-        {
-            try
-            {
-                if (userId < 0)
-                    throw new ArgumentException();
-                List<ClassInfo> classList = _iClassService.ListClassByUserId(userId);
-                //没有查到
-                if (classList == null || classList.Count == 0)
-                    throw new ClassNotFoundException();
-                return classList;
-            }
-            catch
-            {
-                throw;
-            }
-        }
+        ////移到classService
+        //public IList<ClassInfo> ListClassByUserId(long userId)
+        //{
+        //    try
+        //    {
+        //        if (userId < 0)
+        //            throw new ArgumentException();
+        //        List<ClassInfo> classList = _iClassService.ListClassByUserId(userId);
+        //        //没有查到
+        //        if (classList == null || classList.Count == 0)
+        //            throw new ClassNotFoundException();
+        //        return classList;
+        //    }
+        //    catch
+        //    {
+        //        throw;
+        //    }
+        //}
 
         public IList<Course> ListCourseByCourseName(string courseName)
         {
@@ -237,7 +237,8 @@ namespace Xmu.Crms.Services.ViceVersa.Services
                    classInfo.FivePointPercentage < 0 || classInfo.FivePointPercentage > 10 ||
                    classInfo.FourPointPercentage < 0 || classInfo.FourPointPercentage > 10 ||
                    classInfo.ThreePointPercentage < 0 || classInfo.ThreePointPercentage > 10 ||
-                   classInfo.FivePointPercentage + classInfo.FourPointPercentage + classInfo.ThreePointPercentage != 10)
+                   classInfo.FivePointPercentage + classInfo.FourPointPercentage + classInfo.ThreePointPercentage != 10||
+                   classInfo.PresentationPercentage+classInfo.ReportPercentage!=100)
                     throw new InvalidOperationException();
                 classInfo.Course = course;
                 return _iCourseDao.Save(classInfo);    //返回classid
