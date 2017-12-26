@@ -41,6 +41,7 @@ namespace Xmu.Crms.Services.ViceVersa.Daos
                         }
                     }
                     _db.SaveChanges();
+                    scope.Commit();
                 }
                 catch { scope.Rollback(); throw; }
             }   
@@ -75,6 +76,7 @@ namespace Xmu.Crms.Services.ViceVersa.Daos
                     StudentScoreGroup ssg = new StudentScoreGroup { Student = userInfo, SeminarGroupTopic = seminarGroupTopic, Grade = grade };
                     _db.StudentScoreGroup.Add(ssg);
                     _db.SaveChanges();
+                    scope.Commit();
                 }
                 catch
                 {
