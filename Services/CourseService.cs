@@ -71,7 +71,7 @@ namespace Xmu.Crms.Services.ViceVersa.Services
                     throw new ArgumentException();
                 //根据userId找出teacher
                 UserInfo teacher = _iUserService.GetUserByUserId(userId);  //会抛出ArgumentException和UserNotFoundException
-                //course.Teacher = teacher;
+                course.Teacher = teacher;
                 long courseId = _iCourseDao.InsertCourseByUserId(course);
                 return courseId;
             }catch
