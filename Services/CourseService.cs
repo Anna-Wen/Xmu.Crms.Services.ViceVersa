@@ -12,16 +12,16 @@ namespace Xmu.Crms.Services.ViceVersa.Services
     class CourseService : ICourseService
     {
         private readonly ICourseDao _iCourseDao;
-        //private readonly ISeminarService _iSeminarService;
+        private readonly ISeminarService _iSeminarService;
         private readonly IClassService _iClassService;
-        //private readonly IUserService _iUserService;
+        private readonly IUserService _iUserService;
 
-        public CourseService(ICourseDao iCourseDao,IClassService iClassService/*,ISeminarService iSeminarService,IUserService iUserService*/)
+        public CourseService(ICourseDao iCourseDao,IClassService iClassService, ISeminarService iSeminarService, IUserService iUserService)
         {
             _iCourseDao = iCourseDao;
-            //_iSeminarService = iSeminarService;
+            _iSeminarService = iSeminarService;
             _iClassService = iClassService;
-            //_iUserService = iUserService;
+            _iUserService = iUserService;
         }
 
         public void DeleteCourseByCourseId(long courseId)
@@ -33,7 +33,7 @@ namespace Xmu.Crms.Services.ViceVersa.Services
                 //删除course下的class
                 _iClassService.DeleteClassByCourseId(courseId);
                 //删除course下的seminar
-                //_iSeminarService.DeleteSeminarByCourseId(courseId);
+                _iSeminarService.DeleteSeminarByCourseId(courseId);
                 //删除course
                 _iCourseDao.DeleteCourseByCourseId(courseId);
             }
@@ -70,7 +70,7 @@ namespace Xmu.Crms.Services.ViceVersa.Services
                 if (userId < 0)
                     throw new ArgumentException();
                 //根据userId找出teacher
-                //UserInfo teacher = _iUserService.GetUserByUserId(userId);  //会抛出ArgumentException和UserNotFoundException
+                UserInfo teacher = _iUserService.GetUserByUserId(userId);  //会抛出ArgumentException和UserNotFoundException
                 //course.Teacher = teacher;
                 long courseId = _iCourseDao.InsertCourseByUserId(course);
                 return courseId;
@@ -101,7 +101,7 @@ namespace Xmu.Crms.Services.ViceVersa.Services
         {
             try
             {
-                IList<long> idList = null;// _iUserService.ListUserIdByUserName(teacherName);
+                IList<long> idList = _iUserService.ListUserIdByUserName(teacherName);
                 if (idList == null || idList.Count == 0)
                     return null;
                 List<ClassInfo> classList = new List<ClassInfo>();
@@ -121,7 +121,7 @@ namespace Xmu.Crms.Services.ViceVersa.Services
             {
                 if (userId < 0)
                     throw new ArgumentException();
-                List<ClassInfo> classList = null;// _iCourseDao.ListClassByUserId(userId);
+                List<ClassInfo> classList = _iClassService.ListClassByUserId(userId);
                 //没有查到
                 if (classList == null || classList.Count == 0)
                     throw new ClassNotFoundException();
