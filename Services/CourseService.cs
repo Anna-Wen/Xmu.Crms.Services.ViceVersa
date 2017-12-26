@@ -234,9 +234,9 @@ namespace Xmu.Crms.Services.ViceVersa.Services
                 if (classInfo.ReportPercentage < 0 || classInfo.ReportPercentage > 100 ||
                    classInfo.PresentationPercentage < 0 || classInfo.PresentationPercentage > 100 ||
                    classInfo.ReportPercentage + classInfo.PresentationPercentage != 100 ||
-                   classInfo.FivePointPercentage < 0 || classInfo.FivePointPercentage > 10 ||
-                   classInfo.FourPointPercentage < 0 || classInfo.FourPointPercentage > 10 ||
-                   classInfo.ThreePointPercentage < 0 || classInfo.ThreePointPercentage > 10 ||
+                   classInfo.FivePointPercentage < 0 || classInfo.FivePointPercentage > 100 ||
+                   classInfo.FourPointPercentage < 0 || classInfo.FourPointPercentage > 100 ||
+                   classInfo.ThreePointPercentage < 0 || classInfo.ThreePointPercentage > 100 ||
                    classInfo.FivePointPercentage + classInfo.FourPointPercentage + classInfo.ThreePointPercentage != 100||
                    classInfo.PresentationPercentage+classInfo.ReportPercentage!=100)
                     throw new InvalidOperationException();
