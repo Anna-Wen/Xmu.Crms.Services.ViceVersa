@@ -37,9 +37,16 @@ namespace Xmu.Crms.Services.ViceVersa.Services
                 //删除course
                 _iCourseDao.DeleteCourseByCourseId(courseId);
             }
-            catch
+            catch (ClassNotFoundException)
             {
-                throw;
+                //删除course下的seminar
+                _iSeminarService.DeleteSeminarByCourseId(courseId);
+                //删除course
+                _iCourseDao.DeleteCourseByCourseId(courseId); ;
+            }
+            catch(CourseNotFoundException cre)
+            {
+                throw cre;
             }
         }
 

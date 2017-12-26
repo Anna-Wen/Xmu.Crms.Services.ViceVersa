@@ -50,10 +50,12 @@ namespace Xmu.Crms.Services.ViceVersa
                 foreach (ClassInfo c in deleteClasses)
                 {
                     _fixGroupService.DeleteFixGroupByClassId(c.Id);
-                   // 根据class信息删除courseSelection表的记录 并删除班级
+                    // 根据class信息删除courseSelection表的记录 并删除班级
                     _classDao.Delete(c.Id);
                 }
-            }catch(CourseNotFoundException e) { throw e; }
+            }
+            catch (ClassNotFoundException el) {throw el; }
+            catch (CourseNotFoundException e) { throw e; }
         }
 
 
