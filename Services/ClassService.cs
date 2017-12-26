@@ -195,7 +195,6 @@ namespace Xmu.Crms.Services.ViceVersa
                 return list;
             }
             catch (CourseNotFoundException e) { throw e; }
-            catch (ClassNotFoundException e) { throw e; }
         }
         
         //修改班级

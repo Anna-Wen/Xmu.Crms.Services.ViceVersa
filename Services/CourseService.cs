@@ -101,12 +101,10 @@ namespace Xmu.Crms.Services.ViceVersa.Services
         {
             try
             {
-                IList<long> idList = _iUserService.ListUserIdByUserName(teacherName);
-                if (idList == null || idList.Count == 0)
-                    return null;
+                IList<Course> courseList = ListCourseByTeacherName(teacherName);
                 List<ClassInfo> classList = new List<ClassInfo>();
-                foreach (var i in idList)
-                    classList.AddRange(ListClassByUserId(i));
+                foreach (var i in courseList)
+                    classList.AddRange(_iClassService.ListClassByCourseId(i.Id));
                 return classList;
             }catch
             {

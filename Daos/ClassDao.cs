@@ -63,10 +63,6 @@ namespace Xmu.Crms.Services.ViceVersa
 
 
             List<ClassInfo> list = _db.ClassInfo.Include(u => u.Course).Include(u => u.Course.Teacher).Include(u=>u.Course.Teacher.School).Where(u => u.Course.Id == id).ToList<ClassInfo>();
-            if (list == null)
-            {
-                throw new ClassNotFoundException();
-            }
             return list;
         }
 
