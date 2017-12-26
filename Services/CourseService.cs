@@ -241,6 +241,29 @@ namespace Xmu.Crms.Services.ViceVersa.Services
             catch (CourseNotFoundException ec) { throw ec; }
         }
 
-       
+        //根据教师名称列出课程名称
+        public IList<Course> ListCourseByTeacherName(string teacherName)
+        {
+            try
+            {
+                IList<UserInfo> users = _iUserService.ListUserByUserName(teacherName);
+                IList<Course> list = new List<Course>();
+                foreach (UserInfo u in users)
+                {
+                    if (u.Type == Shared.Models.Type.Teacher)
+                    {
+                        IList<Course> temp = ListCourseByUserId(u.Id);
+                        foreach (var c in temp)
+                            list.Add(c);
+                    }
+                }
+                return list;
+            }catch
+            {
+                throw;
+            }
+        }
+
+
     }
 }
