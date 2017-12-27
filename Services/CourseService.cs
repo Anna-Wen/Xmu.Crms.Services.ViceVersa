@@ -231,6 +231,14 @@ namespace Xmu.Crms.Services.ViceVersa.Services
             {
                 Course course= GetCourseByCourseId(courseId);
                 //检查数据是否合法
+                if (classInfo.ReportPercentage == 0 && classInfo.PresentationPercentage == 0 && classInfo.FivePointPercentage == 0 && classInfo.FourPointPercentage == 0 && classInfo.ThreePointPercentage == 0)
+                {
+                    classInfo.ReportPercentage = course.ReportPercentage;
+                    classInfo.PresentationPercentage = course.PresentationPercentage;
+                    classInfo.FivePointPercentage = course.FivePointPercentage;
+                    classInfo.FourPointPercentage = course.FourPointPercentage;
+                    classInfo.ThreePointPercentage = course.ThreePointPercentage;
+                }
                 if (classInfo.ReportPercentage < 0 || classInfo.ReportPercentage > 100 ||
                    classInfo.PresentationPercentage < 0 || classInfo.PresentationPercentage > 100 ||
                    classInfo.ReportPercentage + classInfo.PresentationPercentage != 100 ||
@@ -240,6 +248,7 @@ namespace Xmu.Crms.Services.ViceVersa.Services
                    classInfo.FivePointPercentage + classInfo.FourPointPercentage + classInfo.ThreePointPercentage != 100||
                    classInfo.PresentationPercentage+classInfo.ReportPercentage!=100)
                     throw new InvalidOperationException();
+
                 classInfo.Course = course;
                 return _iCourseDao.Save(classInfo);    //返回classid
 
