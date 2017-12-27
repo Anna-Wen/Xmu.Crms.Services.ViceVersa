@@ -52,16 +52,18 @@ namespace Xmu.Crms.Services.ViceVersa.Services
         public IList<SeminarGroup> ListSeminarGradeByCourseId(long userId, long courseId)
         {
             List<SeminarGroup> seminarGroupList = new List<SeminarGroup>();
-            List<Seminar> seminarList = new List<Seminar>();
+            
             try
             {
                 //调用SeminarService 中 IList<Seminar> ListSeminarByCourseId(long courseId)方法
-                _iSeminarService.ListSeminarByCourseId(courseId);
+                IList<Seminar> seminarList = _iSeminarService.ListSeminarByCourseId(courseId);
 
                 //调用SeminarGroupService 中 SeminarGroup GetSeminarGroupById(long seminarId, long userId)
                 for (int i = 0; i < seminarList.Count; i++)
                 {
-                    seminarGroupList.Add(_iSeminarGroupService.GetSeminarGroupById(seminarList[0].Id, userId));
+                    SeminarGroup seminarGroup = _iSeminarGroupService.GetSeminarGroupById(seminarList[i].Id, userId);
+                    if(seminarGroup!=null)
+                       seminarGroupList.Add(seminarGroup);
                 }
             }
             catch(CourseNotFoundException cre)
