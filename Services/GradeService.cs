@@ -8,6 +8,10 @@ using Xmu.Crms.Shared.Service;
 
 namespace Xmu.Crms.Services.ViceVersa.Services
 {
+    /// <summary>
+    /// 成绩处理模块逻辑层实现
+    /// @author Group ViceVersa
+    /// </summary>
     class GradeService : IGradeService
     {
         private readonly IGradeDao _iGradeDao;
@@ -16,6 +20,15 @@ namespace Xmu.Crms.Services.ViceVersa.Services
         private readonly ISeminarGroupService _iSeminarGroupService;
         private readonly ISeminarService _iSeminarService;
 
+        /// <summary>
+        /// 将所需用到的Dao注入该Service
+        /// @author Group ViceVersa
+        /// </summary>
+        /// <param name="iGradeDao"></param>
+        /// <param name="iUserService"></param>
+        /// <param name="iTopicService"></param>
+        /// <param name="iSeminarGroupService"></param>
+        /// <param name="iSeminarService"></param>
         public GradeService(IGradeDao iGradeDao, IUserService iUserService, ITopicService iTopicService, ISeminarGroupService iSeminarGroupService, ISeminarService iSeminarService)
         {
             _iGradeDao = iGradeDao;
@@ -25,6 +38,11 @@ namespace Xmu.Crms.Services.ViceVersa.Services
             _iSeminarService = iSeminarService;
         }
 
+        /// <summary>
+        /// 按topicId删除学生打分表.
+        /// @author Group ViceVersa
+        /// </summary>
+        /// <param name="topicId">话题Id</param>
         public void DeleteStudentScoreGroupByTopicId(long topicId)
         {
             try
@@ -37,6 +55,15 @@ namespace Xmu.Crms.Services.ViceVersa.Services
             }
         }
 
+        ///<summary>
+        ///获取某学生一堂讨论课信息
+        ///@author Group ViceVersa
+        ///获取某学生一堂讨论课的详细信息（包括成绩）
+        /// </summary>
+        /// <param name="seminarGroupId">讨论课小组Id</param>
+        /// <returns>seminarGroup 讨论课小组信息（包括成绩）</returns>
+        /// <exception cref="T:System.ArgumentException">id格式错误</exception>
+        /// <exception cref="T:Xmu.Crms.Shared.Exceptions.GroupNotFoundException">未找到小组</exception>
         public SeminarGroup GetSeminarGroupBySeminarGroupId(long seminarGroupId)
         {
             try
@@ -49,6 +76,17 @@ namespace Xmu.Crms.Services.ViceVersa.Services
             }
         }
 
+        /// <summary>
+        /// 按课程id获取学生该课程所有讨论课
+        /// @author Group ViceVersa
+        /// 通过课程id获取该课程下学生所有讨论课详细信息（包括成绩）
+        /// </summary>
+        /// <param name="userId">学生id</param>
+        /// <param name="courseId">课程id</param>
+        /// <returns>list 该课程下所有讨论课列表</returns>
+        /// <exception cref="T:System.ArgumentException">id格式错误</exception>
+        /// <seealso cref="M:Xmu.Crms.Shared.Service.ISeminarService.ListSeminarByCourseId(System.Int64)"/>
+        /// <seealso cref="M:Xmu.Crms.Shared.Service.ISeminarGroupService.ListSeminarGroupBySeminarId(System.Int64)"/>
         public IList<SeminarGroup> ListSeminarGradeByCourseId(long userId, long courseId)
         {
             List<SeminarGroup> seminarGroupList = new List<SeminarGroup>();
@@ -77,6 +115,20 @@ namespace Xmu.Crms.Services.ViceVersa.Services
             return seminarGroupList;
         }
 
+        /// <summary>
+        /// 提交对其他小组的打分.
+        /// @author Group ViceVersa
+        /// </summary>
+        /// <param name="userId">用户id</param>
+        /// <param name="topicId">话题Id</param>
+        /// <param name="seminarId">讨论课Id</param>
+        /// <param name="groupId">小组Id</param>
+        /// <param name="grade">分数</param>
+        /// <exception cref="T:System.GroupNotFoundException">该小组未找到</exception>
+        /// <exception cref="T:System.UserNotFoundException">该用户未找到</exception>
+        /// <seealso cref="M:Xmu.Crms.Shared.Service.ITopicService.GetSeminarGroupTopicById(System.Int64)"/>
+        /// <seealso cref="M:Xmu.Crms.Shared.Service.IUserService.GetUserByUserId(System.Int64)"/>
+        /// <seealso cref="M:Xmu.Crms.Shared.Service.IGradeService.InsertGroupGradeByUserId(System.Int64)"/>
         public void InsertGroupGradeByUserId(long topicId, long userId, long groupId, int grade)
         {
             try
@@ -102,6 +154,13 @@ namespace Xmu.Crms.Services.ViceVersa.Services
             }
         }
 
+        /// <summary>
+        /// 按ID设置小组报告分.
+        /// @author Group ViceVersa
+        /// </summary>
+        /// <param name="seminarGroupId">讨论课组id</param>
+        /// <param name="grade">分数</param>
+        /// <exception cref="T:System.GroupNotFoundException">该小组未找到</exception>
         public void UpdateGroupByGroupId(long seminarGroupId, int grade)
         {
             try
@@ -118,6 +177,12 @@ namespace Xmu.Crms.Services.ViceVersa.Services
             }
         }
 
+        /// <summary>
+        /// 获取某学生的讨论课成绩列表.
+        /// @author Group ViceVersa
+        /// </summary>
+        /// <param name="userId">用户id</param>
+        /// <exception cref="T:System.UserNotFoundException">该用户未找到</exception>
         public IList<SeminarGroup> ListSeminarGradeByStudentId(long userId)
         {
             try
@@ -134,6 +199,17 @@ namespace Xmu.Crms.Services.ViceVersa.Services
             }
         }
 
+        /// <summary>
+        /// 定时器方法:讨论课结束后计算展示得分.
+        /// @author Group ViceVersa
+        /// 条件: 讨论课已结束  *GradeService
+        /// </summary>
+        /// <param name="seminarId">讨论课id</param>
+        /// <exception cref="T:System.TopicNotFoundException">话题未找到错误</exception>
+        /// <exception cref="T:System.GroupNotFoundException">小组未找到错误</exception>
+        /// <exception cref="T:System.SeminarNotFoundException">讨论课未找到错误</exception>
+        /// <exception cref="T:System.ClassNotFoundException">班级未找到错误</exception>
+        /// <seealso cref="M:Xmu.Crms.Shared.Service.ITopicService.ListTopicBySeminarId(System.Int64)"/>
         public void CountPresentationGrade(long seminarId)
         {
             try
@@ -166,6 +242,15 @@ namespace Xmu.Crms.Services.ViceVersa.Services
             }
         }
 
+        /// <summary>
+        /// 定时器方法:讨论课结束后计算本次讨论课得分.
+        /// @author Group ViceVersa
+        /// 条件: 讨论课已结束，展示得分已算出  *GradeService
+        /// </summary>
+        /// <param name="seminarId">讨论课id</param>
+        /// <exception cref="T:System.SeminarNotFoundException">讨论课未找到错误</exception>
+        /// <exception cref="T:System.GroupNotFoundException">讨论课小组未找到错误</exception>
+        /// <seealso cref="M:Xmu.Crms.Shared.Service.ISeminarService.ListSeminarGroupBySeminarId(System.Int64)"/>
         public void CountGroupGradeBySerminarId(long seminarId)
         {
             try

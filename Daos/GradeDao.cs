@@ -8,6 +8,10 @@ using Xmu.Crms.Shared.Models;
 
 namespace Xmu.Crms.Services.ViceVersa.Daos
 {
+    /// <summary>
+    /// 处理成绩模块Dao层接口定义.
+    /// @author Group ViceVersa
+    /// </summary>
     class GradeDao : IGradeDao
     {
         private readonly CrmsContext _db;
@@ -18,6 +22,12 @@ namespace Xmu.Crms.Services.ViceVersa.Daos
             _db = db;
         }
 
+        /// <summary>
+        /// 按topicId删除学生打分表.
+        /// @author Group ViceVersa
+        /// </summary>
+        /// <param name="topicId">话题Id</param>
+        /// <exception cref="T:Xmu.Crms.Shared.Exceptions.GroupNotFoundException">未找到小组</exception>
         public void DeleteStudentScoreGroupByTopicId(long topicId)
         {
             using (var scope = _db.Database.BeginTransaction())
@@ -47,6 +57,15 @@ namespace Xmu.Crms.Services.ViceVersa.Daos
             }   
         }
 
+        ///<summary>
+        ///获取某学生一堂讨论课信息
+        ///@author Group ViceVersa
+        ///获取某学生一堂讨论课的详细信息（包括成绩）
+        /// </summary>
+        /// <param name="seminarGroupId">讨论课小组Id</param>
+        /// <returns>seminarGroup 讨论课小组信息（包括成绩）</returns>
+        /// <exception cref="T:System.ArgumentException">id格式错误</exception>
+        /// <exception cref="T:Xmu.Crms.Shared.Exceptions.GroupNotFoundException">未找到小组</exception>
         public SeminarGroup GetSeminarGroupBySeminarGroupId(long seminarGroupId)
         {
             try
@@ -61,14 +80,25 @@ namespace Xmu.Crms.Services.ViceVersa.Daos
                 throw;
             }
         }
-        //不用写，调用其他的
+
+        /// <summary>
+        /// 不用写，调用其他Dao的方法
+        /// </summary>
         public List<SeminarGroup> ListSeminarGradeByCourseId(long userId, long courseId)
         {
             return null;
         }
-        //先在seminarGroupTopic 和userinfo service查好，在这里传入实体对象seminarGroupTopic，userInfo
+
+        /// <summary>
+        /// 提交对其他小组的打分.
+        /// @author Group ViceVersa
+        /// </summary>
+        /// <param name="seminarGroupTopic"></param>
+        /// <param name="userInfo"></param>
+        /// <param name="grade"></param>
         public void InsertGroupGradeByUserId(SeminarGroupTopic seminarGroupTopic, UserInfo userInfo, int grade)
         {
+            //先在seminarGroupTopic 和userinfo service查好，在这里传入实体对象seminarGroupTopic，userInfo
             using (var scope = _db.Database.BeginTransaction())
             {
                 try
@@ -86,6 +116,13 @@ namespace Xmu.Crms.Services.ViceVersa.Daos
             }
         }
 
+        /// <summary>
+        /// 按ID设置小组报告分.
+        /// @author Group ViceVersa
+        /// </summary>
+        /// <param name="seminarGroupId">讨论课组id</param>
+        /// <param name="grade">分数</param>
+        /// <exception cref="T:System.GroupNotFoundException">该小组未找到</exception>
         public void UpdateGroupByGroupId(long seminarGroupId, int grade)
         {
             using (var scope = _db.Database.BeginTransaction())
@@ -110,11 +147,22 @@ namespace Xmu.Crms.Services.ViceVersa.Daos
             }
         }
 
-        //在SeminarGroupService调用 IList<SeminarGroup> ListSeminarGroupIdByStudentId(long userId);
+        /// <summary>
+        /// 不用写，在SeminarGroupService调用 IList<SeminarGroup> ListSeminarGroupIdByStudentId(long userId);
+        /// </summary>
         public List<SeminarGroup> ListSeminarGradeByStudentId(long userId)
         {
             return null;
         }
+
+        /// <summary>
+        /// 自定义快排算法交换部分
+        /// @author Group ViceVersa
+        /// </summary>
+        /// <param name="idList"></param>
+        /// <param name="gradeList"></param>
+        /// <param name="i"></param>
+        /// <param name="j"></param>
         public void Change(long[] idList, double[] gradeList, int i, int j)
         {
             long id = idList[i];
@@ -124,6 +172,15 @@ namespace Xmu.Crms.Services.ViceVersa.Daos
             idList[j] = id;
             gradeList[j] = grade;
         }
+
+        /// <summary>
+        /// 对成绩进行排序，按照比例给最终分数
+        /// @author Group ViceVersa
+        /// </summary>
+        /// <param name="idList"></param>
+        /// <param name="gradeList"></param>
+        /// <param name="low"></param>
+        /// <param name="high"></param>
         public void QuickSort(long[] idList, double[] gradeList, int low, int high)
         {
             if (low >= high) return;
@@ -153,6 +210,16 @@ namespace Xmu.Crms.Services.ViceVersa.Daos
             QuickSort(idList, gradeList, low, i - 1);
             QuickSort(idList, gradeList, i + 1, high);
         }
+
+        /// <summary>
+        /// 根据讨论课Id和话题计算展示分组
+        /// @author Group ViceVersa
+        /// </summary>
+        /// <param name="seminarId"></param>
+        /// <param name="topicList"></param>
+        /// <exception cref="T:System.GroupNotFoundException">该小组未找到</exception>
+        /// <exception cref="T:System.SeminarNotFoundException">该讨论课未找到</exception>
+        /// <exception cref="T:System.ClassNotFoundException">该班级未找到</exception>
         public void CalculatePreGradeByTopicId(long seminarId, IList<Topic> topicList)
         {
             foreach (var topic in topicList)
@@ -275,7 +342,11 @@ namespace Xmu.Crms.Services.ViceVersa.Daos
             }//foreach topic end
         }
 
-        //只需要讨论课ID，因为要排序，必须要一起计算
+        /// <summary>
+        /// 定义事务，根据讨论课Id和话题计算展示成绩，排序打分
+        /// </summary>
+        /// <param name="seminarId"></param>
+        /// <param name="topicList"></param>
         public void CountPresentationGrade(long seminarId, IList<Topic> topicList)
         {
             using (var scope=_db.Database.BeginTransaction())
@@ -288,6 +359,14 @@ namespace Xmu.Crms.Services.ViceVersa.Daos
             }
         }
 
+        /// <summary>
+        /// 定时器方法:讨论课结束后计算本次讨论课得分.
+        /// @author Group ViceVersa
+        /// 条件: 讨论课已结束，展示得分已算出  *GradeService
+        /// </summary>
+        /// <param name="seminarId">讨论课id</param>
+        /// <param name="seminarGroupList">讨论课小组序列</param>
+        /// <exception cref="T:System.GroupNotFoundException">讨论课小组未找到错误</exception>
         public void CountGroupGradeBySerminarId(long seminarId, IList<SeminarGroup> seminarGroupList)
         {
             using (var scope = _db.Database.BeginTransaction())

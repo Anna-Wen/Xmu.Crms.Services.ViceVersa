@@ -364,7 +364,6 @@ namespace Xmu.Crms.Services.ViceVersa
         /// <param name="location">当前讨论课班级的签到状态记录</param>
         /// <exception cref="T:Xmu.Crms.Shared.Exceptions.SeminarNotFoundException">讨论课没有找到</exception>
         /// <exception cref="T:Xmu.Crms.Shared.Exceptions.ClassesNotFoundException">无此Id的班级</exception>
-        void EndCallRollById(long seminarId, long classId);
         public void EndCallRollById(long seminarId, long classId)
         {
             try
