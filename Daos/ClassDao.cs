@@ -9,16 +9,28 @@ using Xmu.Crms.Shared.Models;
 
 namespace Xmu.Crms.Services.ViceVersa
 {
+    /// <summary>
+    /// @author Group ViceVersa
+    /// @version 2.00
+    /// </summary>
     class ClassDao : IClassDao
     {
         private readonly CrmsContext _db;
 
+        /// <summary>
+        /// 构造函数 dbContext注入
+        /// @author Group ViceVersa
+        /// </summary>
         public ClassDao(CrmsContext db)
         {
             _db = db;
         }
 
-        //删除班级和学生选课表
+        /// <summary>
+        /// 按班级id删除班级.
+        /// @author Group ViceVersa
+        /// </summary>
+        /// <param name="id">班级Id</param>
         public void Delete(long id)
         {
             using (var scope = _db.Database.BeginTransaction())
@@ -41,6 +53,12 @@ namespace Xmu.Crms.Services.ViceVersa
             }
         }
 
+        /// <summary>
+        /// 按班级id查找班级信息.
+        /// @author Group ViceVersa
+        /// </summary>
+        /// <param name="id">班级Id</param>
+        /// <returns>ClassInfo 班级信息</returns>
         public ClassInfo Get(long id)
         {
 
@@ -54,7 +72,12 @@ namespace Xmu.Crms.Services.ViceVersa
         }
 
 
-        //根据课程id列出所有班级
+        /// <summary>
+        /// 根据课程id列出所有班级.
+        /// @author Group ViceVersa
+        /// </summary>
+        /// <param name="id">课程Id</param>
+        /// <returns>list 班级列表</returns>
         public List<ClassInfo> QueryAll(long id)
         {
             //找到这门课
@@ -67,8 +90,12 @@ namespace Xmu.Crms.Services.ViceVersa
         }
 
 
-       
-        //添加学生选课表返回id
+        /// <summary>
+        /// 添加学生选课表返回id.
+        /// @author Group ViceVersa
+        /// </summary>
+        /// <param name="t">选课信息</param>
+        /// <returns>courseSelectionId 选课记录id</returns>
         public long InsertSelection(CourseSelection t)
         {
             using (var scope = _db.Database.BeginTransaction())
@@ -88,7 +115,13 @@ namespace Xmu.Crms.Services.ViceVersa
 
         }
 
-        //查询学生选课表的记录
+        /// <summary>
+        /// 查询学生选课表的记录.
+        /// @author Group ViceVersa
+        /// </summary>
+        /// <param name="userId">用户id</param>
+        /// <param name="classId">班级id</param>
+        /// <returns>查询结果</returns>
         public int GetSelection(long userId, long classId)
         {
            
@@ -98,6 +131,11 @@ namespace Xmu.Crms.Services.ViceVersa
             return 0;
         }
 
+        /// <summary>
+        /// 修改班级信息.
+        /// @author Group ViceVersa
+        /// </summary>
+        /// <param name="t">修改后班级信息</param>
         public int Update(ClassInfo t)
         {
             using (var scope = _db.Database.BeginTransaction())
@@ -129,7 +167,12 @@ namespace Xmu.Crms.Services.ViceVersa
         }
 
 
-        //根据班级id/学生id删除学生选课表
+        /// <summary>
+        /// 删除学生选课表的记录.
+        /// @author Group ViceVersa
+        /// </summary>
+        /// <param name="userId">用户id</param>
+        /// <param name="classId">班级id</param>
         public void DeleteSelection(long userId, long classId)
         {
             if (userId != 0)//单个学生取消选课
@@ -161,7 +204,14 @@ namespace Xmu.Crms.Services.ViceVersa
             }
         }
 
-        // 根据学生ID获取班级列表
+        ///<summary>
+        ///根据学生ID获取班级列表.
+        /// @author Group ViceVersa
+        ///
+        /// </summary>
+        /// <param name="userId">学生ID</param>
+       /// <returns>list 班级列表</returns>
+        /// <exception cref="T:Xmu.Crms.Shared.Exceptions.ClassesNotFoundException">无此选课记录</exception>
         public List<ClassInfo> ListClassByUserId(long userId)
         {
             List<CourseSelection> selectionList = _db.CourseSelection.Include(c => c.Student).Include(c=>c.Student.School).Include(c => c.ClassInfo).Include(c=>c.ClassInfo.Course.Teacher.School).Where(c => c.Student.Id == userId).ToList<CourseSelection>();
@@ -176,13 +226,26 @@ namespace Xmu.Crms.Services.ViceVersa
             return classList;
         }
 
-        // 老师获取该班级签到、分组状态.
+        /// <summary>
+        /// 老师获取位置信息，获取班级签到状态.
+        /// 
+        /// @author Group ViceVersa
+        /// </summary>
+        /// <param name="seminarId">讨论课id</param>
+        /// <param name="classId">班级id</param>
+        /// <returns>location 班级签到状态</returns>
         public Location GetLocation(long seminarId, long classId)
         {
             return _db.Location.Include(u=>u.ClassInfo).Include(u=>u.Seminar).SingleOrDefault<Location>(u => u.Seminar.Id == seminarId && u.ClassInfo.Id == classId);
         }
 
-        //添加Location表返回id
+        ///<summary>
+        ///老师发起签到.
+        /// @author Group ViceVersa
+        ///往location表插入一条当前讨论课班级的签到状态
+        /// </summary>
+        /// <param name="t">当前讨论课班级的签到状态记录 </param>
+        /// <returns> 返回location表的新记录的id</returns>
         public long InsertLocation(Location t)
         {
             using (var scope = _db.Database.BeginTransaction())
@@ -201,7 +264,14 @@ namespace Xmu.Crms.Services.ViceVersa
 
         }
 
-        //结束签到时修改location
+        /// <summary>
+        /// 新增老师结束签到
+        /// @author Group ViceVersa
+        /// 老师结束签到,修改当前讨论课班级的签到状态为已结束
+        /// </summary>
+        /// <param name="seminarId">讨论课id</param>
+        /// <param name="classId">班级id</param>
+       /// <exception cref="T:Xmu.Crms.Shared.Exceptions.ClassesNotFoundException">无此Id的班级</exception>
         public int UpdateLocation(long seminarId, long classId)
         {
             using (var scope = _db.Database.BeginTransaction())
