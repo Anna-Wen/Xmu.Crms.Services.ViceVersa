@@ -8,6 +8,10 @@ using Xmu.Crms.Shared.Service;
 
 namespace Xmu.Crms.Services.ViceVersa
 {
+    /// <summary>
+    /// @author Group ViceVersa
+    /// @version 2.00
+    /// </summary>
     class ClassService : IClassService
     {
         private readonly ISeminarService _seminarService;
@@ -15,6 +19,10 @@ namespace Xmu.Crms.Services.ViceVersa
         private readonly IFixGroupService _fixGroupService;
         private readonly IClassDao _classDao;
 
+        /// <summary>
+        /// 构造函数 services注入
+        /// @author Group ViceVersa
+        /// </summary>
         public ClassService(ISeminarService seminarService, IUserService userService, IFixGroupService fixGroupService, IClassDao classDao)
         {
             _seminarService = seminarService;
@@ -23,7 +31,13 @@ namespace Xmu.Crms.Services.ViceVersa
             _classDao = classDao;
         }
 
-        /// 按班级id删除班级.(包括学生选课表)
+        /// <summary>
+        /// 按班级id删除班级.
+        /// @author Group ViceVersa
+        /// </summary>
+        /// <param name="classId">班级ID</param>
+        /// <seealso cref="M:Xmu.Crms.Shared.Service.IClassService.DeleteScoreRuleById(System.Int64)"/>
+        /// <seealso cref="M:Xmu.Crms.Shared.Service.IClassService.DeleteCourseSelectionById(System.Int64,System.Int64)"/>
         public void DeleteClassByClassId(long classId)
         {
                 try
@@ -40,7 +54,15 @@ namespace Xmu.Crms.Services.ViceVersa
         }
 
 
+        /// <summary>
         /// 按courseId删除Class.
+        /// @author Group ViceVersa
+        /// </summary>
+        /// <param name="courseId">课程Id</param>
+        /// <seealso cref="M:Xmu.Crms.Shared.Service.IClassService.ListClassByCourseId(System.Int64)"/>
+        /// <seealso cref="M:Xmu.Crms.Shared.Service.IClassService.DeleteClassSelectionByClassId(System.Int64)"/>
+        /// <seealso cref="M:Xmu.Crms.Shared.Service.IClassService.DeleteScoreRuleById(System.Int64)"/>
+        /// <seealso cref="M:Xmu.Crms.Shared.Service.IFixGroupService.DeleteFixGroupByClassId(System.Int64)"/>
         public void DeleteClassByCourseId(long courseId)
         {
             try
@@ -61,7 +83,7 @@ namespace Xmu.Crms.Services.ViceVersa
 
         /// <summary>
         /// 按classId删除CourseSelection表的一条记录.
-        /// @author zhouzhongjun
+        /// @author Group ViceVersa
         /// </summary>
         /// <param name="classId">班级Id</param>
         public void DeleteClassSelectionByClassId(long classId)
@@ -70,7 +92,12 @@ namespace Xmu.Crms.Services.ViceVersa
         }
 
 
+        /// <summary>
         /// 学生按班级id取消选择班级.
+        /// @author Group ViceVersa
+        /// </summary>
+        /// <param name="userId">用户id</param>
+        /// <param name="classId">班级id</param>
         public void DeleteCourseSelectionById(long userId, long classId)
         {
             try
@@ -84,7 +111,11 @@ namespace Xmu.Crms.Services.ViceVersa
         }
 
 
-        /// 按classId删除ScoreRule.
+        /// <summary>
+        /// 按班级id删除评分规则.
+        /// @author Group ViceVersa
+        /// </summary>
+        /// <param name="classId">班级id</param>
         public void DeleteScoreRuleById(long classId)
         {
             try
@@ -102,7 +133,15 @@ namespace Xmu.Crms.Services.ViceVersa
         }
 
 
-        /// 老师获取该班级签到、分组状态.
+        /// <summary>
+        /// 老师获取位置信息，获取班级签到状态.
+        /// 
+        /// @author Group ViceVersa
+        /// </summary>
+        /// <param name="seminarId">讨论课id</param>
+        /// <param name="classId">班级id</param>
+        /// <returns>location 班级签到状态</returns>
+        /// <seealso cref="M:Xmu.Crms.Shared.Service.ISeminarGroupService.ListSeminarGroupBySeminarId(System.Int64)"/>
         public Location GetCallStatusById(long seminarId, long classId)
         {
             try
@@ -115,7 +154,12 @@ namespace Xmu.Crms.Services.ViceVersa
         }
 
 
+        /// <summary>
         /// 按班级id获取班级详情.
+        /// @author Group ViceVersa
+        /// </summary>
+        /// <param name="classId">班级ID</param>
+        /// <returns>ClassBO 班级</returns>
          public ClassInfo GetClassByClassId(long classId)
         {
 
@@ -128,7 +172,12 @@ namespace Xmu.Crms.Services.ViceVersa
         }
 
 
-        /// 查询评分规则.
+         /// <summary>
+         /// 按班级id获取班级评分规则.
+         /// @author Group ViceVersa
+         /// </summary>
+         /// <param name="classId">班级ID</param>
+         /// <returns>ClassBO 班级</returns>
         public ClassInfo GetScoreRule(long classId)
         {
             try
@@ -138,9 +187,15 @@ namespace Xmu.Crms.Services.ViceVersa
             catch (ClassNotFoundException e) { throw e; }
         }
 
-        
 
-        /// 学生按班级id选择班级.成功返回选课记录id 失败返回0
+
+        /// <summary>
+        /// 学生按班级id选择班级.
+        /// @author Group ViceVersa
+        /// </summary>
+        /// <param name="userId">用户id</param>
+        /// <param name="classId">班级id</param>
+        /// <returns>courseSelectionId 选课记录id</returns>
         public long InsertCourseSelectionById(long userId, long classId)
         {
             try
@@ -169,7 +224,13 @@ namespace Xmu.Crms.Services.ViceVersa
         }
 
 
-        /// 新增评分规则.  返回班级id
+        /// <summary>
+        /// 按班级id和班级新增评分规则.
+        /// @author Group ViceVersa
+        /// </summary>
+        /// <param name="classId">班级ID</param>
+        /// <param name="newclass">修改后班级信息</param>
+        /// <returns>ClassID 班级ID</returns>
         public long InsertScoreRule(long classId, ClassInfo proportions)
         {
             try
@@ -192,7 +253,12 @@ namespace Xmu.Crms.Services.ViceVersa
         }
 
 
+        /// <summary>
         /// 根据课程ID获得班级列表.
+        /// @author Group ViceVersa
+        /// </summary>
+        /// <param name="courseId">课程ID</param>
+        /// <returns>list 班级列表</returns>
         public IList<ClassInfo> ListClassByCourseId(long courseId)
         {
             try
@@ -202,8 +268,13 @@ namespace Xmu.Crms.Services.ViceVersa
             }
             catch (CourseNotFoundException e) { throw e; }
         }
-        
-        //修改班级
+
+        /// <summary>
+        /// 按班级id和班级修改班级信息.
+        /// @author Group ViceVersa
+        /// </summary>
+        /// <param name="classId">班级ID</param>
+        /// <param name="newclass">修改后班级信息</param>
         public void UpdateClassByClassId(long classId, ClassInfo newclass)
         {
             try
@@ -214,7 +285,12 @@ namespace Xmu.Crms.Services.ViceVersa
         }
 
 
-        /// 修改评分规则.
+        /// <summary>
+        /// 按班级id和班级修改评分规则.
+        /// @author Group ViceVersa
+        /// </summary>
+        /// <param name="classId">班级ID</param>
+        /// <param name="newclass">修改后班级信息</param>
         public void UpdateScoreRule(long classId, ClassInfo proportions)
         {
             try
@@ -235,7 +311,15 @@ namespace Xmu.Crms.Services.ViceVersa
             catch (ClassNotFoundException ec){ throw ec; }
         }
 
-        //根据学生ID获取班级列表.
+        ///<summary>
+        ///根据学生ID获取班级列表.
+        /// @author Group ViceVersa
+        ///
+        /// </summary>
+        /// <param name="userId">学生ID</param>
+        /// <returns>list 班级列表</returns>
+        /// <exception cref="T:System.ArgumentException">userId格式错误时抛出</exception>
+        ///  <exception cref="T:Xmu.Crms.Shared.Exceptions.ClassesNotFoundException">无此班级</exception>
         public List<ClassInfo> ListClassByUserId(long userId)
         {
             try
@@ -245,7 +329,15 @@ namespace Xmu.Crms.Services.ViceVersa
             catch (ClassNotFoundException e) { throw e; }
         }
 
-        //老师发起签到.
+        ///<summary>
+        ///老师发起签到.
+        /// @author Group ViceVersa
+        ///往location表插入一条当前讨论课班级的签到状态
+        /// </summary>
+        /// <param name="location">当前讨论课班级的签到状态记录 </param>
+        /// <returns> 返回location表的新记录的id</returns>
+        ///   <exception cref="T:Xmu.Crms.Shared.Exceptions.SeminarNotFoundException">讨论课没有找到</exception>
+        /// <exception cref="T:Xmu.Crms.Shared.Exceptions.ClassesNotFoundException">无此Id的班级</exception>
         public long CallInRollById(Location location)
         {
             try
@@ -260,7 +352,15 @@ namespace Xmu.Crms.Services.ViceVersa
             catch(ClassNotFoundException ec) { throw ec; }
         }
 
-        //老师结束签到.
+        /// <summary>
+        /// 新增老师结束签到
+        /// @author Group ViceVersa
+        /// 老师结束签到,修改当前讨论课班级的签到状态为已结束
+        /// </summary>
+        /// <param name="location">当前讨论课班级的签到状态记录</param>
+        /// <exception cref="T:Xmu.Crms.Shared.Exceptions.SeminarNotFoundException">讨论课没有找到</exception>
+        /// <exception cref="T:Xmu.Crms.Shared.Exceptions.ClassesNotFoundException">无此Id的班级</exception>
+        void EndCallRollById(long seminarId, long classId);
         public void EndCallRollById(long seminarId, long classId)
         {
             try
