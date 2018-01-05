@@ -59,7 +59,11 @@ namespace Xmu.Crms.Services.ViceVersa
         }
 
 
-        /// 按classId删除CourseSelection表的一条记录.  ？？和取消选课的区别
+        /// <summary>
+        /// 按classId删除CourseSelection表的一条记录.
+        /// @author zhouzhongjun
+        /// </summary>
+        /// <param name="classId">班级Id</param>
         public void DeleteClassSelectionByClassId(long classId)
         {
             _classDao.DeleteSelection(0, classId);
