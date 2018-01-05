@@ -23,6 +23,10 @@ namespace Xmu.Crms.Services.ViceVersa
         /// 构造函数 services注入
         /// @author Group ViceVersa
         /// </summary>
+        /// <param name="seminarService">seminarService</param>
+        /// <param name="classDao">classDao</param>
+        /// <param name="userService">userService</param>
+        /// <param name="fixGroupService">fixGroupService</param>
         public ClassService(ISeminarService seminarService, IUserService userService, IFixGroupService fixGroupService, IClassDao classDao)
         {
             _seminarService = seminarService;
